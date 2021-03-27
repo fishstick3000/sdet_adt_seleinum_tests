@@ -14,5 +14,5 @@ import org.junit.runners.Suite;
         fourthTest.class
 })
 
-public class e2e_test_suite {
+public class E2E_test_suite {
 }
