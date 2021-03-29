@@ -9,6 +9,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class TodoPageObject {
@@ -23,18 +24,20 @@ public class TodoPageObject {
     @FindBy(how = How.ID, using = "todo-list")
     public static WebElement todoList;
 
-    @FindBy(xpath = "//*[@id=\'todo-list\']/li/div/label")
+    @FindBy(className = "view")
     public static WebElement firstTodoOnList;
 
-    @FindBy(xpath = "//*[@id=\'todo-list\']/li/div/button")
+    @FindBy(className = "destroy")
     public static WebElement firstTodoOnListDeleteButton;
+
+    @FindBy(className = "todo")
+    public static List<WebElement> listOfTodos;
 
 
     public WebElement todoCompleteToggle;
     public WebElement deleteTodoButton;
     public WebElement selectedTodo;
     public int listSize;
-    public int test;
     public String selectedTodoText;
     public String selectedTodoStatus;
 
@@ -60,48 +63,53 @@ public class TodoPageObject {
     }
 
     public int getTodoListSize() {
-        listSize = todoList.findElements(By.xpath("//*/li")).size();
+        listSize = listOfTodos.size();
         return listSize;
     }
 
     public void setTodoCompleteToggleByListPosition(int num) {
         driver.manage().timeouts().implicitlyWait(250, TimeUnit.MILLISECONDS);
-        todoCompleteToggle = todoList.findElement(By.xpath("//*/li[" + num + "]/div/input"));
+        todoCompleteToggle = listOfTodos.get(num-1).findElement(By.className("toggle"));
         todoCompleteToggle.click();
     }
 
     public String getTodoCompleteStatusByListPosition(int num) {
-        selectedTodoStatus = todoList.findElement(By.xpath("//*[@id=\'todo-list\']/li[" + num + "]")).getAttribute("class");
+        selectedTodoStatus = listOfTodos.get(num-1).getAttribute("class");
         return selectedTodoStatus;
     }
 
     public String getTodoTextByListPosition(int num) {
         driver.manage().timeouts().implicitlyWait(250, TimeUnit.MILLISECONDS);
-        selectedTodoText = todoList.findElement(By.xpath("//*/li[" + num + "]/div/label")).getText();
+        selectedTodoText = listOfTodos.get(num-1).getText();
+        System.out.print(selectedTodoText);
         return selectedTodoText;
     }
 
     public void deleteTodoByListPosition(int num) {
         action = new Actions(driver);
-        selectedTodo = todoList.findElement(By.xpath("//*/li[" + num + "]/div/label"));
+        selectedTodo = listOfTodos.get(num-1);
         action.moveToElement(selectedTodo).perform();
-        driver.manage().timeouts().implicitlyWait(250, TimeUnit.MILLISECONDS);
-        deleteTodoButton = todoList.findElement(By.xpath("//*/li[" + num + "]/div/button"));
+        driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
+        deleteTodoButton = listOfTodos.get(num-1).findElement(By.className("destroy"));
         deleteTodoButton.click();
+        driver.manage().timeouts().implicitlyWait(300, TimeUnit.MILLISECONDS);
     }
 
 
     public void deleteAllTodos() {
-        test = getTodoListSize();
+        listSize = getTodoListSize();
         Actions action = new Actions(driver);
-        for (int i = test; i > 0; i--) {
-            // Finds the todo at the top of the list
+        for (int i = listSize; i > 0; i--) {
             driver.manage().timeouts().implicitlyWait(250, TimeUnit.MILLISECONDS);//
-            // hovers the mouse over todo
             action.moveToElement(firstTodoOnList).perform();
-            driver.manage().timeouts().implicitlyWait(250, TimeUnit.MILLISECONDS);//
+            driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);//
             firstTodoOnListDeleteButton.click();
         }
+    }
+
+    public void printTest() {
+//        System.out.print(listOfTodos.size());
+//        System.out.print();
     }
 
 

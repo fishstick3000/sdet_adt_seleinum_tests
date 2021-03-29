@@ -31,6 +31,8 @@ public class firstTest {
         String selectedTodoText = todoPage.getTodoTextByListPosition(totalTodos);
         // Tests to see if the test text sent shows up in the newest todo object
         assertEquals("Test To Do 001 is not found in the list", "Test To Do 001", selectedTodoText);
+
+        todoPage.printTest();
         todoPage.deleteAllTodos();
     }
 
