@@ -28,16 +28,15 @@ public class firstTest {
         // Gets the size of the todo list
         int totalTodos = todoPage.getTodoListSize();
         // Finds the todo at the bottom of the list since it is the newest todo in the list
-        String selectedTodoText = todoPage.getTodoTextByListPosition(totalTodos);
+        String selectedTodoText = todoPage.getTodoTextByListPosition(totalTodos - 1);
         // Tests to see if the test text sent shows up in the newest todo object
         assertEquals("Test To Do 001 is not found in the list", "Test To Do 001", selectedTodoText);
-
-        todoPage.printTest();
-        todoPage.deleteAllTodos();
     }
 
     @AfterClass
     public static void closeBrowser() {
+        // Clean up all todo after test.
+        todoPage.deleteAllTodos();
         // quit the driver
         driver.close();
         driver.quit();

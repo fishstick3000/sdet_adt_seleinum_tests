@@ -24,12 +24,6 @@ public class TodoPageObject {
     @FindBy(how = How.ID, using = "todo-list")
     public static WebElement todoList;
 
-    @FindBy(className = "view")
-    public static WebElement firstTodoOnList;
-
-    @FindBy(className = "destroy")
-    public static WebElement firstTodoOnListDeleteButton;
-
     @FindBy(className = "todo")
     public static List<WebElement> listOfTodos;
 
@@ -40,6 +34,7 @@ public class TodoPageObject {
     public int listSize;
     public String selectedTodoText;
     public String selectedTodoStatus;
+    public String selectedTodoAtt;
 
     public static WebElement getTodoList() {
         return todoList;
@@ -68,29 +63,35 @@ public class TodoPageObject {
     }
 
     public void setTodoCompleteToggleByListPosition(int num) {
-        driver.manage().timeouts().implicitlyWait(250, TimeUnit.MILLISECONDS);
-        todoCompleteToggle = listOfTodos.get(num-1).findElement(By.className("toggle"));
+        driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
+        todoCompleteToggle = listOfTodos.get(num).findElement(By.className("toggle"));
         todoCompleteToggle.click();
+        driver.manage().timeouts().implicitlyWait(800, TimeUnit.MILLISECONDS);
     }
 
     public String getTodoCompleteStatusByListPosition(int num) {
-        selectedTodoStatus = listOfTodos.get(num-1).getAttribute("class");
+        selectedTodoStatus = listOfTodos.get(num).getAttribute("class");
         return selectedTodoStatus;
     }
 
     public String getTodoTextByListPosition(int num) {
         driver.manage().timeouts().implicitlyWait(250, TimeUnit.MILLISECONDS);
-        selectedTodoText = listOfTodos.get(num-1).getText();
-        System.out.print(selectedTodoText);
+        selectedTodoText = listOfTodos.get(num).getText();
         return selectedTodoText;
+    }
+
+    public String getTodoCssTextDecorationByListPosition(int num) {
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        selectedTodoAtt = listOfTodos.get(num).findElement(By.xpath("//*/div/label")).getCssValue("text-decoration");
+        return selectedTodoAtt;
     }
 
     public void deleteTodoByListPosition(int num) {
         action = new Actions(driver);
-        selectedTodo = listOfTodos.get(num-1);
+        selectedTodo = listOfTodos.get(num);
         action.moveToElement(selectedTodo).perform();
         driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
-        deleteTodoButton = listOfTodos.get(num-1).findElement(By.className("destroy"));
+        deleteTodoButton = listOfTodos.get(num).findElement(By.className("destroy"));
         deleteTodoButton.click();
         driver.manage().timeouts().implicitlyWait(300, TimeUnit.MILLISECONDS);
     }
@@ -100,16 +101,12 @@ public class TodoPageObject {
         listSize = getTodoListSize();
         Actions action = new Actions(driver);
         for (int i = listSize; i > 0; i--) {
-            driver.manage().timeouts().implicitlyWait(250, TimeUnit.MILLISECONDS);//
-            action.moveToElement(firstTodoOnList).perform();
-            driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);//
-            firstTodoOnListDeleteButton.click();
+            driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
+            action.moveToElement(listOfTodos.get(i-1)).perform();
+            driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
+            listOfTodos.get(i-1).findElement(By.className("destroy")).click();
+            driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
         }
-    }
-
-    public void printTest() {
-//        System.out.print(listOfTodos.size());
-//        System.out.print();
     }
 
 

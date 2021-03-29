@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class secondTest {
     static WebDriver driver;
@@ -23,23 +24,25 @@ public class secondTest {
 
     @Test
     public void testDeleteTodo() {
-
+        // Adds test todo
         todoPage.addTodo("Test To Do 002");//
         int totalTodosBeforeDelete = todoPage.getTodoListSize();
-        todoPage.deleteTodoByListPosition(totalTodosBeforeDelete);
+        // Sends the delete function the last item on the list since it is the newest one created
+        todoPage.deleteTodoByListPosition(totalTodosBeforeDelete - 1);
         // Gets the size of the todo list after todo is deleted
         int totalTodosAfterDelete = todoPage.getTodoListSize();
         //Sees if the the list of todo items shows the expected -1 list item
         assertEquals("Todo was not deleted", totalTodosBeforeDelete - 1, totalTodosAfterDelete);
 
-        todoPage.deleteAllTodos();
+
 
     }
 
 
     @AfterClass
     public static void closeBrowser() {
-
+        // Clean up all todo after test.
+        todoPage.deleteAllTodos();
         driver.close();
         driver.quit();
     }
